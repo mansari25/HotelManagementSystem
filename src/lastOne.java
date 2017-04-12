@@ -1,0 +1,236 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import javax.swing.JRadioButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class lastOne extends JFrame {
+
+	private JPanel contentPane;
+	private JTextField textField;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					lastOne frame = new lastOne();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	private JTextField textField_1;
+	Connection conn=null;
+	
+	public lastOne() {
+		conn=SQLconnection.dbConnector();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 360);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.RED);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		JLabel lblNewLabel = new JLabel("Check-out");
+		lblNewLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		lblNewLabel.setBounds(152, 16, 87, 16);
+		contentPane.add(lblNewLabel);
+		
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("Cash Payment");
+		rdbtnNewRadioButton.setBounds(29, 59, 141, 23);
+		contentPane.add(rdbtnNewRadioButton);
+		
+		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("Credit Card");
+		rdbtnNewRadioButton_1.setBounds(29, 221, 141, 23);
+		contentPane.add(rdbtnNewRadioButton_1);
+		JButton btnNewButton = new JButton("Select");
+		btnNewButton.setBounds(137, 303, 117, 29);
+		contentPane.add(btnNewButton);
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.YELLOW);
+		panel.setBounds(24, 83, 398, 121);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		panel.setVisible(false);
+	
+		
+		JLabel lblNewLabel_1 = new JLabel("Total Due: ");
+		lblNewLabel_1.setBounds(6, 26, 70, 16);
+		panel.add(lblNewLabel_1);
+		
+		JLabel lblNewLabel_2 = new JLabel("Cash Tendered:   $");
+		lblNewLabel_2.setBounds(6, 6, 122, 16);
+		panel.add(lblNewLabel_2);
+		
+		textField = new JTextField();
+		textField.setBounds(125, 1, 99, 26);
+		panel.add(textField);
+		textField.setColumns(10);
+		
+		JLabel lblNewLabel_3 = new JLabel("New label");
+		lblNewLabel_3.setBounds(116, 26, 98, 16);
+		panel.add(lblNewLabel_3);
+		
+		
+		JLabel lblNewLabel_4 = new JLabel("Change Due:  ");
+		lblNewLabel_4.setBounds(6, 46, 88, 16);
+		panel.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_5 = new JLabel("New label");
+		lblNewLabel_5.setBounds(116, 46, 61, 16);
+		panel.add(lblNewLabel_5);
+		lblNewLabel_5.setVisible(false);
+		
+		JLabel lblNewLabel_6 = new JLabel("Check-out Successful!");
+		lblNewLabel_6.setBounds(126, 99, 204, 16);
+		panel.add(lblNewLabel_6);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(Color.YELLOW);
+		panel_1.setBounds(29, 245, 378, 53);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		panel_1.setVisible(false);
+		
+		JLabel lblNewLabel_7 = new JLabel("CC Number:");
+		lblNewLabel_7.setBounds(6, 6, 80, 16);
+		panel_1.add(lblNewLabel_7);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(87, 1, 182, 26);
+		panel_1.add(textField_1);
+		textField_1.setColumns(10);
+		
+		JLabel lblNewLabel_8 = new JLabel("XXXX-XXXX-XXXX");
+		lblNewLabel_8.setBounds(114, 31, 118, 16);
+		panel_1.add(lblNewLabel_8);
+		
+		JLabel lblNewLabel_9 = new JLabel("Example:");
+		lblNewLabel_9.setBounds(38, 31, 61, 16);
+		panel_1.add(lblNewLabel_9);
+		
+		JButton btnNewButton_1 = new JButton("Submit");
+		
+		btnNewButton_1.setBounds(271, 1, 101, 29);
+		panel_1.add(btnNewButton_1);
+		lblNewLabel_6.setVisible(false);
+		
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ButtonGroup bg=new ButtonGroup();
+				bg.add(rdbtnNewRadioButton);
+				bg.add(rdbtnNewRadioButton_1);
+				
+				if(bg.getSelection()==null){
+					JOptionPane.showMessageDialog(null, "Please select an option.");
+				}else if(rdbtnNewRadioButton.isSelected()){
+					panel.setVisible(true);
+					try{
+						
+						String rmNum=EmpCheckOut.TField();
+						
+						int num=Integer.parseInt(rmNum);
+						String query="Select * from Guests where roomnum = ?";
+						
+						PreparedStatement pst=conn.prepareStatement(query);
+						pst.setInt(1, num);
+						ResultSet rs=pst.executeQuery();
+						double total=rs.getDouble(9);
+						String tots=Double.toString(total);
+						
+						
+						lblNewLabel_3.setText("$ "+tots);
+						JButton btnCheckout = new JButton("Check-Out");
+						btnCheckout.setBounds(116, 68, 117, 29);
+						panel.add(btnCheckout);
+						btnCheckout.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								String tend=textField.getText();
+								double tend2=Double.parseDouble(tend);
+								double change=tend2-total;
+								
+								String change2=Double.toString(change);
+								lblNewLabel_5.setText("$ "+change2);
+								lblNewLabel_5.setVisible(true);
+								
+								try{
+									
+								String rmNum=EmpCheckOut.TField();
+								int num=Integer.parseInt(rmNum);
+								
+								String query= "delete from guests where roomnum = ?";
+								
+								PreparedStatement pst=conn.prepareStatement(query);
+								
+								pst.setInt(1, num);
+								System.out.println("hoi");
+								pst.executeUpdate();
+								System.out.println("per");
+								lblNewLabel_6.setVisible(true);
+								System.out.println("que");
+								
+								}catch(Exception u){
+									JOptionPane.showMessageDialog(null, "Err");
+								}
+							}
+						});
+						
+						
+					}catch(Exception h){
+						JOptionPane.showMessageDialog(null, "Error");
+					}
+					
+				}else{
+					panel_1.setVisible(true);
+					btnNewButton_1.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							String tf=textField_1.getText();
+							if(tf.equals(null)){
+								JOptionPane.showMessageDialog(null, "Please enter a valid number.");
+							
+						}else{
+							
+							try{
+								
+								String rmNum=EmpCheckOut.TField();
+								int num=Integer.parseInt(rmNum);							
+								String query= "Delete from Guests where roomnum = ?";								
+								PreparedStatement pst=conn.prepareStatement(query);
+								pst.setInt(1, num);
+								pst.executeQuery();
+								}catch(Exception t){
+									JOptionPane.showMessageDialog(null, "Err2");
+								}
+							}
+						}
+					});
+					
+				}
+			}
+		});
+		
+	}
+}

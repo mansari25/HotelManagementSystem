@@ -1,0 +1,203 @@
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.sql.*;
+import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import java.awt.Color;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class EmpCheckOut extends JFrame {
+
+	private JPanel contentPane;
+	public static JTextField textField;
+	public static String TField(){
+		return textField.getText();
+	}
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					EmpCheckOut frame = new EmpCheckOut();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	Connection conn=null;
+	public EmpCheckOut() {
+		conn=SQLconnection.dbConnector();
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 450, 422);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.RED);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JLabel lblNewLabel = new JLabel("Check-Out");
+		lblNewLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
+		lblNewLabel.setBounds(158, 19, 111, 23);
+		contentPane.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Enter Guests Room:");
+		lblNewLabel_1.setBounds(24, 83, 142, 23);
+		contentPane.add(lblNewLabel_1);
+		
+		textField = new JTextField();
+		textField.setBounds(158, 81, 58, 26);
+		contentPane.add(textField);
+		textField.setColumns(10);
+		
+		
+		JButton btnNewButton = new JButton("Lookup Guest");
+		btnNewButton.setBounds(100, 118, 193, 29);
+		contentPane.add(btnNewButton);
+		
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.YELLOW);
+		panel.setBounds(26, 153, 376, 200);
+		contentPane.add(panel);
+		panel.setLayout(null);
+		panel.setVisible(false);
+		
+		JLabel lblNewLabel_2 = new JLabel("First Name:");
+		lblNewLabel_2.setBounds(6, 27, 101, 16);
+		panel.add(lblNewLabel_2);
+		
+		JLabel lblNewLabel_3 = new JLabel("Last Name:");
+		lblNewLabel_3.setBounds(6, 55, 101, 16);
+		panel.add(lblNewLabel_3);
+		
+		JLabel lblNewLabel_4 = new JLabel("New label");
+		lblNewLabel_4.setBounds(63, 93, -53, 8);
+		panel.add(lblNewLabel_4);
+		
+		JLabel lblNewLabel_5 = new JLabel("Credit Card on file:");
+		lblNewLabel_5.setBounds(6, 83, 130, 16);
+		panel.add(lblNewLabel_5);
+		
+		JLabel lblNewLabel_6 = new JLabel("New label");
+		lblNewLabel_6.setBounds(93, 27, 61, 16);
+		panel.add(lblNewLabel_6);
+		
+		JLabel lblNewLabel_7 = new JLabel("New label");
+		lblNewLabel_7.setBounds(93, 55, 61, 16);
+		panel.add(lblNewLabel_7);
+		
+		JLabel lblNewLabel_8 = new JLabel("New label");
+		lblNewLabel_8.setBounds(135, 83, 61, 16);
+		panel.add(lblNewLabel_8);
+		
+		JLabel lblNewLabel_9 = new JLabel("Total Bill:   $");
+		lblNewLabel_9.setBounds(6, 111, 92, 16);
+		panel.add(lblNewLabel_9);
+		
+		JLabel lblNewLabel_10 = new JLabel("New label");
+		lblNewLabel_10.setBounds(93, 111, 61, 16);
+		panel.add(lblNewLabel_10);
+		
+		JButton btnNewButton_1 = new JButton("Use Card on File");
+		btnNewButton_1.setVisible(false);
+		
+		btnNewButton_1.setBounds(93, 139, 156, 29);
+		panel.add(btnNewButton_1);
+		
+		JLabel lblNewLabel_11 = new JLabel("Check-out Successful!");
+		lblNewLabel_11.setBounds(93, 166, 149, 16);
+		panel.add(lblNewLabel_11);
+		lblNewLabel_11.setVisible(false);
+		
+		JButton btnNewButton_2 = new JButton("Proceed with Check-out");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				lastOne lo=new lastOne();
+				lo.setVisible(true);
+			}
+		});
+		btnNewButton_2.setBounds(108, 365, 185, 29);
+		contentPane.add(btnNewButton_2);
+		
+		JButton btnNewButton_3 = new JButton("Log Off");
+		btnNewButton_3.setVisible(false);
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				Initial i=new Initial();
+				i.setVisible(true);
+			}
+		});
+		btnNewButton_3.setBounds(315, 365, 117, 29);
+		contentPane.add(btnNewButton_3);
+		
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+				String rmNum=textField.getText();
+				int num=Integer.parseInt(rmNum);
+				String query="Select * from Guests where roomnum = ?";
+				PreparedStatement pst=conn.prepareStatement(query);
+				pst.setInt(1, num);
+				ResultSet rs=pst.executeQuery();
+				
+				String first=rs.getString(3);
+				String last=rs.getString(4);
+				String cc=rs.getString(11);
+				double bill=rs.getDouble(9);
+				String bill2= Double.toString(bill);
+				
+			
+				lblNewLabel_6.setText(first);
+				lblNewLabel_7.setText(last);
+				if(cc != null){
+					lblNewLabel_8.setText("YES");
+					btnNewButton_1.setVisible(true);
+				}else{
+					lblNewLabel_8.setText("NO");
+				}
+				lblNewLabel_10.setText(bill2);
+				
+				panel.setVisible(true);
+				
+				}catch (Exception h){
+					JOptionPane.showMessageDialog(null, "Room not Found!");
+					
+				}
+			}
+		});
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+				String rmNum=textField.getText();
+				int num=Integer.parseInt(rmNum);
+				String query="Delete from Guests where roomnum = ?";
+				PreparedStatement pst=conn.prepareStatement(query);
+				pst.setInt(1, num);
+				pst.executeUpdate();
+				btnNewButton_1.setVisible(false);
+				lblNewLabel_11.setVisible(true);
+				}catch(Exception f){
+					JOptionPane.showMessageDialog(null, "Cannot check out guest!");
+				}
+			}
+		});
+	}
+}
