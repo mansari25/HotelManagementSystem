@@ -42,7 +42,7 @@ public class EmpSelection extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 381);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.RED);
+		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -91,7 +91,9 @@ public class EmpSelection extends JFrame {
 				}else if(rdbtnNewRadioButton_2.isSelected()){
 					JOptionPane.showMessageDialog(null, "Please select an option3.");
 				}else{
-					JOptionPane.showMessageDialog(null, "Please select an option4.");
+					setVisible(false);
+					EmpBooking eb=new EmpBooking();
+					eb.setVisible(true);
 				}
 			}
 		});

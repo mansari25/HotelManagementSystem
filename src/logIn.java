@@ -58,13 +58,13 @@ public class logIn {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBackground(Color.RED);
+		frame.setBackground(Color.GRAY);
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
 		JPanel enter = new JPanel();
-		enter.setBackground(Color.RED);
+		enter.setBackground(Color.LIGHT_GRAY);
 		frame.getContentPane().add(enter, "name_1569341282938");
 		enter.setLayout(null);
 		

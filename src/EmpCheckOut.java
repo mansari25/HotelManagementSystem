@@ -40,13 +40,15 @@ public class EmpCheckOut extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
 	Connection conn=null;
 	public EmpCheckOut() {
+		
 		conn=SQLconnection.dbConnector();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 422);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.RED);
+		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -71,7 +73,7 @@ public class EmpCheckOut extends JFrame {
 		contentPane.add(btnNewButton);
 		
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.YELLOW);
+		panel.setBackground(Color.DARK_GRAY);
 		panel.setBounds(26, 153, 376, 200);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -127,6 +129,11 @@ public class EmpCheckOut extends JFrame {
 		JButton btnNewButton_2 = new JButton("Proceed with Check-out");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try{
+				conn.close();
+				}catch(Exception f){
+					JOptionPane.showMessageDialog(null, "Err");
+				}
 				setVisible(false);
 				lastOne lo=new lastOne();
 				lo.setVisible(true);
@@ -147,6 +154,17 @@ public class EmpCheckOut extends JFrame {
 		btnNewButton_3.setBounds(315, 365, 117, 29);
 		contentPane.add(btnNewButton_3);
 		
+		JButton btnNewButton_4 = new JButton("<<BACK");
+		btnNewButton_4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				EmpSelection es=new EmpSelection();
+				es.setVisible(true);
+			}
+		});
+		btnNewButton_4.setBounds(6, 6, 82, 29);
+		contentPane.add(btnNewButton_4);
+		
 		
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -163,8 +181,6 @@ public class EmpCheckOut extends JFrame {
 				String cc=rs.getString(11);
 				double bill=rs.getDouble(9);
 				String bill2= Double.toString(bill);
-				
-			
 				lblNewLabel_6.setText(first);
 				lblNewLabel_7.setText(last);
 				if(cc != null){
@@ -173,7 +189,7 @@ public class EmpCheckOut extends JFrame {
 				}else{
 					lblNewLabel_8.setText("NO");
 				}
-				lblNewLabel_10.setText(bill2);
+				lblNewLabel_10.setText(bill2+"0");
 				
 				panel.setVisible(true);
 				
@@ -186,14 +202,25 @@ public class EmpCheckOut extends JFrame {
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try{
-				String rmNum=textField.getText();
-				int num=Integer.parseInt(rmNum);
-				String query="Delete from Guests where roomnum = ?";
-				PreparedStatement pst=conn.prepareStatement(query);
-				pst.setInt(1, num);
-				pst.executeUpdate();
+					String room=textField.getText();
+					int num=Integer.parseInt(room);
+					String query="Select * from Guests where roomnum = ?";
+					PreparedStatement pst=conn.prepareStatement(query);
+					pst.setInt(1, num);
+					ResultSet rs=pst.executeQuery();
+					String last=rs.getString(4);
+				
+				String q="UPDATE Rooms SET Avail=null WHERE RoomNum =(SELECT Roomnum FROM Rooms WHERE Avail=?)";
+				PreparedStatement pst3=conn.prepareStatement(q);
+				pst3.setString(1, last);
+				pst3.execute();
+				String query2="Delete from Guests where roomnum = ?";
+				PreparedStatement pst2=conn.prepareStatement(query2);
+				pst2.setInt(1, num);
+				pst2.executeUpdate();
 				btnNewButton_1.setVisible(false);
 				lblNewLabel_11.setVisible(true);
+				btnNewButton_3.setVisible(true);
 				}catch(Exception f){
 					JOptionPane.showMessageDialog(null, "Cannot check out guest!");
 				}

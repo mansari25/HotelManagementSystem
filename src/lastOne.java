@@ -49,7 +49,7 @@ public class lastOne extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 360);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.RED);
+		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -69,7 +69,7 @@ public class lastOne extends JFrame {
 		btnNewButton.setBounds(137, 303, 117, 29);
 		contentPane.add(btnNewButton);
 		JPanel panel = new JPanel();
-		panel.setBackground(Color.YELLOW);
+		panel.setBackground(Color.DARK_GRAY);
 		panel.setBounds(24, 83, 398, 121);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -108,7 +108,7 @@ public class lastOne extends JFrame {
 		panel.add(lblNewLabel_6);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(Color.YELLOW);
+		panel_1.setBackground(Color.DARK_GRAY);
 		panel_1.setBounds(29, 245, 378, 53);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
@@ -133,8 +133,33 @@ public class lastOne extends JFrame {
 		
 		JButton btnNewButton_1 = new JButton("Submit");
 		
+		
+		
+		
 		btnNewButton_1.setBounds(271, 1, 101, 29);
 		panel_1.add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("<<BACK");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				EmpCheckOut es=new EmpCheckOut();
+				es.setVisible(true);
+			}
+		});
+		btnNewButton_2.setBounds(6, 3, 78, 29);
+		contentPane.add(btnNewButton_2);
+		
+		JButton button = new JButton("Log out");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				Initial i=new Initial();
+				i.setVisible(true);
+			}
+		});
+		button.setBounds(6, 303, 99, 29);
+		contentPane.add(button);
 		lblNewLabel_6.setVisible(false);
 		
 		
@@ -148,8 +173,8 @@ public class lastOne extends JFrame {
 					JOptionPane.showMessageDialog(null, "Please select an option.");
 				}else if(rdbtnNewRadioButton.isSelected()){
 					panel.setVisible(true);
+					
 					try{
-						
 						String rmNum=EmpCheckOut.TField();
 						
 						int num=Integer.parseInt(rmNum);
@@ -159,38 +184,52 @@ public class lastOne extends JFrame {
 						pst.setInt(1, num);
 						ResultSet rs=pst.executeQuery();
 						double total=rs.getDouble(9);
+						
 						String tots=Double.toString(total);
+						
+						
 						
 						
 						lblNewLabel_3.setText("$ "+tots);
 						JButton btnCheckout = new JButton("Check-Out");
 						btnCheckout.setBounds(116, 68, 117, 29);
 						panel.add(btnCheckout);
+						
 						btnCheckout.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								String tend=textField.getText();
 								double tend2=Double.parseDouble(tend);
+								
 								double change=tend2-total;
 								
 								String change2=Double.toString(change);
+								
 								lblNewLabel_5.setText("$ "+change2);
 								lblNewLabel_5.setVisible(true);
 								
 								try{
 									
-								String rmNum=EmpCheckOut.TField();
-								int num=Integer.parseInt(rmNum);
+									String room=EmpCheckOut.TField();
+									int num=Integer.parseInt(room);
+									String query="Select * from Guests where roomnum = ?";
+									PreparedStatement pst=conn.prepareStatement(query);
+									pst.setInt(1, num);
+									ResultSet rs=pst.executeQuery();
+									String last=rs.getString(4);
 								
-								String query= "delete from guests where roomnum = ?";
-								
-								PreparedStatement pst=conn.prepareStatement(query);
-								
-								pst.setInt(1, num);
-								System.out.println("hoi");
-								pst.executeUpdate();
-								System.out.println("per");
+								String q="UPDATE Rooms SET Avail=null WHERE RoomNum =(SELECT Roomnum FROM Rooms WHERE Avail=?)";
+								PreparedStatement pst3=conn.prepareStatement(q);
+								pst3.setString(1, last);
+								pst3.execute();
+								String query2="Delete from Guests where roomnum = ?";
+								PreparedStatement pst2=conn.prepareStatement(query2);
+								pst2.setInt(1, num);
+								pst2.executeUpdate();
 								lblNewLabel_6.setVisible(true);
-								System.out.println("que");
+								btnCheckout.setVisible(false);
+								btnNewButton.setVisible(false);
+								conn.close();
+								
 								
 								}catch(Exception u){
 									JOptionPane.showMessageDialog(null, "Err");
@@ -205,26 +244,48 @@ public class lastOne extends JFrame {
 					
 				}else{
 					panel_1.setVisible(true);
+					String tf=textField_1.getText();
 					btnNewButton_1.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							String tf=textField_1.getText();
+							
 							if(tf.equals(null)){
 								JOptionPane.showMessageDialog(null, "Please enter a valid number.");
 							
 						}else{
 							
+								
+							
 							try{
 								
-								String rmNum=EmpCheckOut.TField();
-								int num=Integer.parseInt(rmNum);							
-								String query= "Delete from Guests where roomnum = ?";								
-								PreparedStatement pst=conn.prepareStatement(query);
-								pst.setInt(1, num);
-								pst.executeQuery();
-								}catch(Exception t){
-									JOptionPane.showMessageDialog(null, "Err2");
-								}
+								String room=EmpCheckOut.TField();
+							int num=Integer.parseInt(room);
+							String query="Select * from Guests where roomnum = ?";
+							PreparedStatement pst=conn.prepareStatement(query);
+							pst.setInt(1, num);
+							ResultSet rs=pst.executeQuery();
+							String last=rs.getString(4);
+							System.out.println(last);
+						
+						String q="UPDATE Rooms SET Avail=null WHERE RoomNum =(SELECT Roomnum FROM Rooms WHERE Avail=?)";
+						PreparedStatement pst3=conn.prepareStatement(q);
+						pst3.setString(1, last);
+						pst3.execute();
+						String query2="Delete from Guests where roomnum = ?";
+						PreparedStatement pst2=conn.prepareStatement(query2);
+						pst2.setInt(1, num);
+						pst2.executeUpdate();
+						btnNewButton.setVisible(false);
+						btnNewButton_1.setVisible(false);
+						JOptionPane.showMessageDialog(null, "Check-out Successful");
+						
+						conn.close();
+							}catch(Exception r){
+								JOptionPane.showMessageDialog(null, "Error");
 							}
+								}
+						
+						
+							
 						}
 					});
 					

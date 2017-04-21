@@ -3,14 +3,10 @@ import java.sql.*;
 import javax.swing.*;
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
+
 import java.awt.Color;
 import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -40,21 +36,21 @@ public class EmpCheckIn extends JFrame {
 		});
 	}
 
-	Connection conn1=null;
+	
 	Connection conn=null;
 	public EmpCheckIn() {
 		conn=SQLconnection.dbConnector();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 482, 558);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.RED);
+		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Check-In ");
 		lblNewLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
-		lblNewLabel.setBounds(159, 19, 81, 31);
+		lblNewLabel.setBounds(179, 16, 81, 31);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("Guest's First Name:");
@@ -76,7 +72,7 @@ public class EmpCheckIn extends JFrame {
 		textField_1.setColumns(10);
 		
 		JPanel resPanel = new JPanel();
-		resPanel.setBackground(Color.YELLOW);
+		resPanel.setBackground(Color.DARK_GRAY);
 		resPanel.setVisible(false);
 		resPanel.setBounds(48, 231, 375, 211);
 		contentPane.add(resPanel);
@@ -161,6 +157,21 @@ public class EmpCheckIn extends JFrame {
 					pst.setString(1, firstname);
 					pst.setString(2, lastname);
 					ResultSet rs=pst.executeQuery();
+					int roomnum=rs.getInt(6);
+					if(roomnum>0&&roomnum<6){
+						String tot="update guests set totaldue = '100.00' where firstname=? and lastname=?";
+						PreparedStatement pat=conn.prepareStatement(tot);
+						pat.setString(1, textField.getText());
+						pat.setString(2, textField_1.getText());
+						pat.execute();
+						
+						}else{
+							String tot2="update guests set totaldue = '175.00' where firstname=? and lastname=?";
+							PreparedStatement pat2=conn.prepareStatement(tot2);
+							pat2.setString(1, textField.getText());
+							pat2.setString(2, textField_1.getText());
+							pat2.execute();
+						}
 					int checked=rs.getInt(7);
 					System.out.println(checked);
 					if(checked==1){
@@ -172,6 +183,7 @@ public class EmpCheckIn extends JFrame {
 					pt.setString(1, textField.getText());
 					pt.setString(2, textField_1.getText());
 					pt.execute();
+					
 					lblNewLabel_success.setVisible(true);
 					}
 					
@@ -190,12 +202,33 @@ public class EmpCheckIn extends JFrame {
 				setVisible(false);
 				Initial i=new Initial();
 				i.setVisible(true);
+				try{
+					conn.close();
+				}catch(Exception n){
+					
+				}
 			}
 		});
 		btnNewButton_2.setBounds(6, 501, 99, 29);
 		contentPane.add(btnNewButton_2);
 		
+		JButton btnNewButton_3 = new JButton("<<BACK");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try{
+					conn.close();
+					}catch(Exception f){
+						JOptionPane.showMessageDialog(null, "Err");
+					}
+				setVisible(false);
+				EmpSelection es=new EmpSelection();
+				es.setVisible(true);
+			}
+		});
+		btnNewButton_3.setBounds(6, 6, 81, 29);
+		contentPane.add(btnNewButton_3);
 		
+	
 	
 			}
 		

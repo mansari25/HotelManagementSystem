@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 public class Initial extends JFrame {
 
@@ -35,14 +36,15 @@ public class Initial extends JFrame {
 	 */
 	public Initial() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 553, 437);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.RED);
+		contentPane.setBackground(Color.GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JButton btnNewButton = new JButton("GUEST");
+		btnNewButton.setFont(new Font("American Typewriter", Font.BOLD, 16));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
@@ -50,10 +52,12 @@ public class Initial extends JFrame {
 				lg.frame.setVisible(true);
 			}
 		});
-		btnNewButton.setBounds(135, 46, 156, 51);
+		btnNewButton.setBounds(190, 67, 173, 62);
 		contentPane.add(btnNewButton);
 		
 		JButton btnEmployee = new JButton("EMPLOYEE");
+		btnEmployee.setFont(new Font("American Typewriter", Font.BOLD, 16));
+		btnEmployee.setBackground(Color.DARK_GRAY);
 		btnEmployee.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
@@ -61,11 +65,12 @@ public class Initial extends JFrame {
 				emp.setVisible(true);
 				}
 		});
-		btnEmployee.setBounds(135, 156, 156, 51);
+		btnEmployee.setBounds(190, 247, 173, 62);
 		contentPane.add(btnEmployee);
 		
 		JLabel lblNewLabel = new JLabel("OR");
-		lblNewLabel.setBounds(202, 117, 30, 16);
+		lblNewLabel.setFont(new Font("American Typewriter", Font.PLAIN, 13));
+		lblNewLabel.setBounds(260, 179, 30, 16);
 		contentPane.add(lblNewLabel);
 	}
 }

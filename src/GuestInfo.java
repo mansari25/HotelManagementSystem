@@ -44,7 +44,7 @@ public class GuestInfo extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 420);
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.RED);
+		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -70,6 +70,8 @@ public class GuestInfo extends JFrame {
 		contentPane.add(rdbtnNewRadioButton_3);
 		
 		JButton btnNewButton = new JButton("Select");
+		btnNewButton.setBounds(137, 318, 117, 29);
+		contentPane.add(btnNewButton);
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ButtonGroup bg=new ButtonGroup();
@@ -78,12 +80,20 @@ public class GuestInfo extends JFrame {
 				
 				if(bg.getSelection()==null){
 					JOptionPane.showMessageDialog(null, "Please select an option.");
+				}else if(rdbtnNewRadioButton_3.isSelected()){
+					
+					Booking b=new Booking();
+					b.setVisible(true);
+					setVisible(false);
+				}else{
+					RoomService rs=new RoomService();
+					setVisible(false);
+					rs.setVisible(true);
 				}
 				
 			}
 		});
-		btnNewButton.setBounds(137, 318, 117, 29);
-		contentPane.add(btnNewButton);
+		
 		
 		
 		
